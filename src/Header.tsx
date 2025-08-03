@@ -61,6 +61,10 @@ export const Header: React.FC<Props> = ({
           if (!trimmedTitle) {
             setError('Title should not be empty');
 
+            setTimeout(() => {
+              setError(null);
+            }, 3000);
+
             return;
           }
 
@@ -97,11 +101,6 @@ export const Header: React.FC<Props> = ({
         <input
           value={newTodoTitle}
           onChange={e => setNewTodoTitle(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              handleAddTodo(newTodoTitle).catch();
-            }
-          }}
           data-cy="NewTodoField"
           type="text"
           className="todoapp__new-todo"
@@ -110,10 +109,6 @@ export const Header: React.FC<Props> = ({
           disabled={loadingTodo}
           ref={inputRef}
         />
-
-        <button type="button" onClick={() => handleAddTodo(newTodoTitle)}>
-          Add
-        </button>
       </form>
     </header>
   );

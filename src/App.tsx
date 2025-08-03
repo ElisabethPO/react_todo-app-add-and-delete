@@ -62,8 +62,6 @@ export const App: React.FC = () => {
       const errorMessage = 'Title cannot be empty';
 
       setError(errorMessage);
-
-      return Promise.reject(new Error(errorMessage));
     }
 
     const newTodo: TodoInput = {

@@ -22,16 +22,6 @@ export const TodoList: React.FC<Props> = ({
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {tempTodo && (
-        <TodoItem
-          todo={tempTodo}
-          isLoading
-          setError={setError}
-          loadingTodo={loadingTodo}
-          onDelete={onDelete}
-        />
-      )}
-
       {filteredTodos.map(todo => (
         <TodoItem
           key={todo.id}
@@ -41,6 +31,16 @@ export const TodoList: React.FC<Props> = ({
           onDelete={onDelete}
         />
       ))}
+
+      {tempTodo && (
+        <TodoItem
+          todo={tempTodo}
+          isLoading
+          setError={setError}
+          loadingTodo={loadingTodo}
+          onDelete={onDelete}
+        />
+      )}
     </section>
   );
 };
