@@ -108,36 +108,34 @@ export const App: React.FC = () => {
       })
       .finally(() => {
         setLoadingTodo(null);
+        inputRef.current?.focus();
       });
   };
 
   const handleClearCompleted = async () => {
     const completedTodos = todos.filter(todo => todo.completed);
+    const idsToDelete = completedTodos.map(todo => todo.id);
 
-    const errors: string[] = [];
+    idsToDelete.forEach(id => setLoadingTodo(id));
 
-    completedTodos.forEach(todo => setLoadingTodo(todo.id));
-
-    await Promise.allSettled(
-      completedTodos.map(async todo => {
-        try {
-          await deleteTodo(todo.id);
-        } catch {
-          errors.push(`Failed to delete todo with id ${todo.id}`);
-        }
-      }),
+    const results = await Promise.allSettled(
+      idsToDelete.map(id => deleteTodo(id)),
     );
+
+    const failedIds: number[] = [];
+
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        failedIds.push(idsToDelete[index]);
+      }
+    });
 
     setTodos(prevTodos =>
-      prevTodos.filter(
-        todo =>
-          !todo.completed ||
-          errors.includes(`Failed to delete todo with id ${todo.id}`),
-      ),
+      prevTodos.filter(todo => !todo.completed || failedIds.includes(todo.id)),
     );
 
-    if (errors.length > 0) {
-      setError('Some todos could not be deleted');
+    if (failedIds.length > 0) {
+      setError('Unable to delete a todo');
       setTimeout(() => setError(null), 3000);
     }
 
