@@ -101,7 +101,6 @@ export const App: React.FC = () => {
     deleteTodo(id)
       .then(() => {
         setTodos(current => current.filter(todo => todo.id !== id));
-        inputRef.current?.focus();
       })
       .catch(() => {
         setError('Unable to delete a todo');
@@ -119,7 +118,7 @@ export const App: React.FC = () => {
 
     completedTodos.forEach(todo => setLoadingTodo(todo.id));
 
-    await Promise.all(
+    await Promise.allSettled(
       completedTodos.map(async todo => {
         try {
           await deleteTodo(todo.id);
@@ -143,6 +142,7 @@ export const App: React.FC = () => {
     }
 
     setLoadingTodo(null);
+    inputRef.current?.focus();
   };
 
   if (!USER_ID) {
