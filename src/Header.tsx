@@ -16,7 +16,7 @@ interface Props {
   setNewTodoTitle: (value: string) => void;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   loadingTodo: boolean;
-  handleAddTodo: (title: string) => Promise<Todo>;
+  handleAddTodo: (title: string) => Promise<void>;
   inputRef: React.RefObject<HTMLInputElement>;
 }
 
@@ -27,7 +27,6 @@ export const Header: React.FC<Props> = ({
   setTempTodo,
   setNewTodoTitle,
   loadingTodo,
-  setTodos,
   handleAddTodo,
   inputRef,
 }) => {
@@ -86,16 +85,7 @@ export const Header: React.FC<Props> = ({
           setTempTodo(tempTask);
 
           setLoadingTodo(true);
-          handleAddTodo(newTodo.title)
-            .then(createdTodo => {
-              setTodos(current => [...current, createdTodo]);
-              setNewTodoTitle('');
-            })
-            .catch(() => {
-              setError('Unable to add a todo');
-              setTimeout(() => setError(null), 3000);
-            })
-            .finally(() => setLoadingTodo(false));
+          handleAddTodo(newTodo.title);
         }}
       >
         <input

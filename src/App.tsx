@@ -57,11 +57,13 @@ export const App: React.FC = () => {
     }
   });
 
-  const handleAddTodo = async (title: string): Promise<Todo> => {
+  const handleAddTodo = async (title: string): Promise<void> => {
     if (!title.trim()) {
       const errorMessage = 'Title cannot be empty';
 
       setError(errorMessage);
+
+      return Promise.reject(new Error(errorMessage));
     }
 
     const newTodo: TodoInput = {
@@ -83,13 +85,12 @@ export const App: React.FC = () => {
       setNewTodoTitle('');
       inputRef.current?.focus();
 
-      return await Promise.resolve(createdTodo);
+      setTempTodo(null);
     } catch (e) {
       setError('Unable to add a todo');
-
-      return await Promise.reject(e);
-    } finally {
+      setTimeout(() => setError(null), 3000);
       setTempTodo(null);
+    } finally {
       setIsTodosLoading(false);
     }
   };
@@ -100,6 +101,7 @@ export const App: React.FC = () => {
     deleteTodo(id)
       .then(() => {
         setTodos(current => current.filter(todo => todo.id !== id));
+        inputRef.current?.focus();
       })
       .catch(() => {
         setError('Unable to delete a todo');
